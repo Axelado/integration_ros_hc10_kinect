@@ -6,6 +6,6 @@ moveit_setup_assistant_config:
   SRDF:
     relative_path: config/motoman_hc10.srdf
   CONFIG:
-    author_name: Axel NIATO
-    author_email: axelniato@gmail.com
-    generated_timestamp: 1725831088
+    author_name: loic
+    author_email: aloykyllian31520@gmail.com
+    generated_timestamp: 1725887127
