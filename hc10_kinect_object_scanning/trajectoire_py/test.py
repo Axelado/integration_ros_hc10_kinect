@@ -7,6 +7,7 @@ groupe_name = "hc10_arm"
 import time
 
 move_groupe = moveit_commander.MoveGroupCommander(groupe_name)
+robot = moveit_commander.RobotCommander()
 
 values = move_groupe.get_current_joint_values()
 print(values)
@@ -20,8 +21,11 @@ print(values)
 
 plan = move_groupe.go(wait=True)
 move_groupe.stop()
-
-
+robot_state = robot.get_current_state()
+print("kjdfi",robot.get_current_state())
+print(type(robot_state))
+joint_6_t = robot_state.get_global_link_transform("joint_6_t")
+print("edfiuhspogjs",joint_6_t)
 time.sleep(3)
 joint_actuel = move_groupe.get_active_joints()
 
