@@ -36,9 +36,15 @@ def Ellipse_Create(nuage,scale=1):
     num_levels = math.ceil(MaxZ / 10)  # Arrondir au prochain entier si c'est un flottant    
     # Générer les niveaux de Z en fonction de MaxZ et du nombre de niveaux
     levels = np.linspace(0, MaxZ, num_levels + 1)[1:]
-    tab =[]
-    for i in range(len(x)):
-        tab.append([x[i],y[i]])
-    return tab,levels
 
-tab,level = Ellipse_Create(nua,1.5)
+
+    return [x,y],levels
+
+def closest(nuageinLocal):
+    points = np.array(nuageinLocal)
+    MaxZ = points[np.argmax(points[:, 2])]
+    return MaxZ[2]
+    
+
+
+[x,y],level = Ellipse_Create(nua,1.5)
