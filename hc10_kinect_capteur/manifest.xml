@@ -1,0 +1,15 @@
+<package>
+  <description brief="hc10_kinect_capteur">
+
+     hc10_kinect_capteur
+
+  </description>
+  <author>Gexture-ROS</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hc10_kinect_capteur</url>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="std_msgs"/>
+
+</package>
