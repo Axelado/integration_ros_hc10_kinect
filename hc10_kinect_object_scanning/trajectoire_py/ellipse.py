@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-
-import math
+import rospy
 import numpy as np
+from sensor_msgs.msg import PointCloud2
+import sensor_msgs.point_cloud2 as pc2
+import math
 import matplotlib.pyplot as plt
 
 
-nua = [[2,2,2],[2,-3,5],[6,5,7],[-9,5,28],[-10,5,7],[15,2,9],[4,-8,2]]
+#nua = [[2,2,2],[2,-3,5],[6,5,7],[-9,5,28],[-10,5,7],[15,2,9],[4,-8,2]]
+
 
 
 def Ellipse_Create(nuage,scale=1):
@@ -46,7 +49,33 @@ def closest(nuageinLocal):
     points = np.array(nuageinLocal)
     MinZ = points[np.argmin(points[:, 2])]
     return MinZ[2]
-    
 
 
-[x,y],level = Ellipse_Create(nua,1.5)
+def pointcloud_callback(msg):
+    global point_cloud_pub
+
+    try:
+        modified_points = []
+
+        for p in pc2.read_points(msg, field_names=("x", "y", "z", "rgb"), skip_nans=True):
+            x, y, z = p[0], p[1], p[2]
+            modified_points.append([x, y, z])
+        
+        rospy.loginfo(f"{modified_points}")
+        
+        [x,y],levels = Ellipse_Create(modified_points,1.5)
+        plt.plot(x,y)
+        plt.show()
+
+
+    except Exception as e:
+        rospy.logerr("Failed to process point cloud: %s" % str(e))
+
+
+if __name__ == "__main__":
+    # Initialize the ROS node
+    rospy.init_node("kinect_pointcloud_visualizer_ocd", anonymous=True)
+
+    # Subscribe to the /camera/depth/points topic
+    rospy.Subscriber("/camera/depth/points_black", PointCloud2, pointcloud_callback)
+    rospy.spin()

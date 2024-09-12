@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  <node 
+        pkg="hc10_kinect_capteur"  name="data_reader"     
+        type="second_iteration.py"              
+        output="screen">
+
+    </node>
+    
+    <node 
+        pkg="hc10_kinect_object_scanning"  name="ellipse_creator"     
+        type="ellipse.py"              
+        output="screen">
+
+    </node>
+</launch>
