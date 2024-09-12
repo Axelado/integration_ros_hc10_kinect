@@ -43,7 +43,7 @@ def Ellipse_Create(nuage,scale=1):
     levels = np.linspace(0, MaxZ, num_levels + 1)[1:]
 
 
-    return [x,y],levels
+    return [x,y],levels,[centerx,centery]
 
 def closest(nuageinLocal):
     points = np.array(nuageinLocal)
@@ -63,7 +63,7 @@ def pointcloud_callback(msg):
         
         rospy.loginfo(f"{modified_points}")
         
-        [x,y],levels = Ellipse_Create(modified_points,1.5)
+        [x,y],levels,centre = Ellipse_Create(modified_points,1.5)
         plt.plot(x,y)
         plt.show()
 

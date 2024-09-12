@@ -33,11 +33,11 @@ values = move_groupe.get_current_joint_values()
 print(values)
 
 joint_goal = move_groupe.get_current_joint_values()
-joint_goal[0] = 0.0
-joint_goal[1] = 0.0
-joint_goal[2] = 0.0
-joint_goal[3] = 0.0
-joint_goal[4] = 0.0
+joint_goal[0] = -0.47
+joint_goal[1] = -0.08
+joint_goal[2] = 0.82
+joint_goal[3] = 0.09
+joint_goal[4] = -0.80
 joint_goal[5] = 0.0
 
 
