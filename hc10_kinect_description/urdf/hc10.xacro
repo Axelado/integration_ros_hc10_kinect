@@ -1,5 +1,8 @@
 <?xml version="1.0" ?>
 <robot name="motoman_hc10" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:include filename="$(find hc10_kinect_description)/urdf/hc10_macro.xacro" />
+  <xacro:include filename="$(find hc10_kinect_description)/urdf/common_materials.xacro"/>
+  <xacro:include filename="$(find hc10_kinect_description)/urdf/camera.xacro"/>
+  <xacro:include filename="$(find hc10_kinect_description)/urdf/gazebo_control.xacro"/>
   <xacro:motoman_hc10 prefix=""/>
 </robot>

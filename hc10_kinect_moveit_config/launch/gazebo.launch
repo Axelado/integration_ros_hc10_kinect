@@ -7,23 +7,31 @@
   <arg name="world_pose" default="-x 0 -y 0 -z 0 -R 0 -P 0 -Y 0" doc="Pose to spawn the robot at"/>
   <arg name="initial_joint_positions" default=" -J joint_1_s 0 -J joint_2_l 0 -J joint_3_u 0 -J joint_4_r 0 -J joint_5_b 0 -J joint_6_t 0" doc="Initial joint configuration of the robot"/>
 
-  <!-- Start Gazebo paused to allow the controllers to pickup the initial pose -->
+  <!-- Start Gazebo paused to allow the controllers to pick up the initial pose -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch" pass_all_args="true">
     <arg name="paused" value="true"/>
   </include>
 
-  <!-- Set the robot urdf on the parameter server -->
-  <param name="robot_description" textfile="$(find hc10_kinect_moveit_config)/config/gazebo_motoman_hc10.urdf" />
+  <!-- Generate the robot's URDF from Xacro and set it on the parameter server -->
+  <arg name="robot_xacro" default="$(find hc10_kinect_description)/urdf/hc10.xacro" />
+  <node name="robot_description_xacro" pkg="xacro" type="xacro" args="$(arg robot_xacro)" output="screen">
+    <remap from="robot_description" to="/robot_description" />
+  </node>
+
+  <!-- Set the robot description on the parameter server -->
+  <param name="robot_description" command="$(find xacro)/xacro $(arg robot_xacro)" />
 
   <!-- Unpause the simulation after loading the robot model -->
   <arg name="unpause" value="$(eval '' if arg('paused') else '-unpause')" />
 
   <!-- Spawn the robot in Gazebo -->
-  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot $(arg unpause) $(arg world_pose) $(arg initial_joint_positions)"
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param /robot_description -model robot $(arg unpause) $(arg world_pose) $(arg initial_joint_positions)"
     respawn="false" output="screen" />
 
   <!-- Load the controller parameters onto the parameter server -->
   <rosparam file="$(find hc10_kinect_moveit_config)/config/gazebo_controllers.yaml" />
+
+  <!-- Include the ROS controllers launch file -->
   <include file="$(dirname)/ros_controllers.launch"/>
 
   <!-- Spawn the Gazebo ROS controllers -->
