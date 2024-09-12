@@ -16,7 +16,7 @@ def pointcloud_callback(msg):
     try:
         modified_points = []
 
-        min_z = 0.0
+        min_z = -1.0
         max_z = 5.0  
 
         for p in pc2.read_points(msg, field_names=("x", "y", "z", "rgb"), skip_nans=True):
