@@ -5,7 +5,7 @@ from moveit_msgs.msg import MoveGroupActionGoal
 
 
 def callback(data):
-
+    pass
     #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.goal)
      
 def listener(TopicName):
