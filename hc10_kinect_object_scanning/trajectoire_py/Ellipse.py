@@ -42,8 +42,8 @@ def Ellipse_Create(nuage,scale=1):
 
 def closest(nuageinLocal):
     points = np.array(nuageinLocal)
-    MaxZ = points[np.argmax(points[:, 2])]
-    return MaxZ[2]
+    MinZ = points[np.argmin(points[:, 2])]
+    return MinZ[2]
     
 
 
