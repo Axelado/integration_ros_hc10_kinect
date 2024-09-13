@@ -1,0 +1,9 @@
+<launch>
+  <!-- Convert PointCloud to OctoMap -->
+  <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" output="screen">
+  <remap from="cloud_in" to="/camera/depth/points"/>
+  <param name="sensor_frame" value="kinect_link_optical"/>  
+  <param name="frame_id" value="world"/> 
+</node>
+
+</launch>
