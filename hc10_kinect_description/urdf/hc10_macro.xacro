@@ -1,7 +1,27 @@
 <?xml version="1.0" ?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="motoman_hc10" params="prefix">
-    
+
+
+    <material name="white">
+      <color rgba="1 1 1 1"/>
+    </material>
+
+    <material name="orange">
+      <color rgba="1 0.3 0.1 1"/>
+    </material>
+
+    <material name="blue">
+      <color rgba="0.2 0.2 1 1"/>
+    </material>
+
+    <material name="red">
+      <color rgba="1 0 0 1"/>
+    </material>
+
+    <material name="black">
+      <color rgba="0 0 0 1"/>
+    </material>
 
     <!-- link list -->
     <link name="world"/>
@@ -143,7 +163,7 @@
     <!-- end of link list -->
 
     <!-- joint list -->
-    <joint name="world_fixed" type="fixed">
+    <joint name="map_fixed" type="fixed">
       <parent link="world"/>
       <child link="${prefix}base_link"/>
     </joint>
@@ -201,7 +221,7 @@
       <limit lower="${radians(-180)}" upper="${radians(180)}" effort="31.36" velocity="${radians(250)}"/>
       <dynamics damping="1"/>
     </joint>
-    
+
     <joint name="${prefix}joint_6_t-tool0" type="fixed">
       <origin xyz="0 0 -0.130" rpy="${pi} 0 0"/>
       <parent link="${prefix}link_6_t"/>

@@ -44,7 +44,7 @@ def Ellipse_Create(nuage,scale=1):
     levels = np.linspace(0, MaxZ, num_levels + 1)[1:]
 
 
-    return [x,y],levels,[centerx,centery]
+    return [x,y],levels
 
 def closest(nuageinLocal):
     points = np.array(nuageinLocal)
