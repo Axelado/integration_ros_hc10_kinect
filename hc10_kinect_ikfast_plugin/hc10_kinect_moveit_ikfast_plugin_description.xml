@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<library path="lib/libhc10_kinect_ikfast_moveit_ikfast_plugin">
+  <class name="hc10_kinect_ikfast/IKFastKinematicsPlugin" type="hc10_kinect_ikfast::IKFastKinematicsPlugin" base_class_type="kinematics::KinematicsBase">
+    <description>IKFast61 plugin for closed-form kinematics of motoman_hc10 hc10_arm</description>
+  </class>
+</library>
