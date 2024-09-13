@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 
+def test():
+    return 1,2
+
+t = test()
+a,b = t
+print(t,a,b)
+
 import moveit_commander
 from geometry_msgs.msg import Pose
 groupe_name = "hc10_arm"
@@ -49,3 +56,5 @@ move_groupe.stop()
 
 values = move_groupe.get_current_joint_values()
 print(values)
+
+

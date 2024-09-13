@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from pickle import NONE
 import rospy
 import numpy as np
 from sensor_msgs.msg import PointCloud2
@@ -8,7 +9,7 @@ import matplotlib.pyplot as plt
 
 
 #nua = [[2,2,2],[2,-3,5],[6,5,7],[-9,5,28],[-10,5,7],[15,2,9],[4,-8,2]]
-
+coord = None
 
 
 def Ellipse_Create(nuage,scale=1):
@@ -36,7 +37,7 @@ def Ellipse_Create(nuage,scale=1):
     x =  centerx + a*np.cos(t)*scale
     y = centery + b*np.sin(t)*scale
 
-    #Détermination des différents niveaux autour desquels on effectuera une révolution
+    #Déterminationcoord des différents niveaux autour desquels on effectuera une révolution
 
     num_levels = math.ceil(MaxZ / 10)  # Arrondir au prochain entier si c'est un flottant    
     # Générer les niveaux de Z en fonction de MaxZ et du nombre de niveaux
@@ -52,7 +53,7 @@ def closest(nuageinLocal):
 
 
 def pointcloud_callback(msg):
-    global point_cloud_pub
+    global point_cloud_pub,coord
 
     try:
         modified_points = []
@@ -63,19 +64,22 @@ def pointcloud_callback(msg):
         
         rospy.loginfo(f"{modified_points}")
         
-        [x,y],levels,centre = Ellipse_Create(modified_points,1.5)
-        plt.plot(x,y)
-        plt.show()
+        coord = Ellipse_Create(modified_points,1.5)
+        # plt.plot(x,y)
+        # plt.show()
 
 
     except Exception as e:
         rospy.logerr("Failed to process point cloud: %s" % str(e))
 
 
-if __name__ == "__main__":
+def ellipse():
     # Initialize the ROS node
     rospy.init_node("kinect_pointcloud_visualizer_ocd", anonymous=True)
 
     # Subscribe to the /camera/depth/points topic
     rospy.Subscriber("/camera/depth/points_black", PointCloud2, pointcloud_callback)
     rospy.spin()
+    while coord == None:
+        continue
+    return coord

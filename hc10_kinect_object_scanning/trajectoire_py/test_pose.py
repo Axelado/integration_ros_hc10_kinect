@@ -23,7 +23,7 @@ target_Pose = Pose()#creation de la target pose dans le bon format
 
 target_Pose.position.x=0.0
 target_Pose.position.y=0.0
-target_Pose.position.z=0.3
+target_Pose.position.z=1
 
 target_Pose.orientation.x=0.0#ox
 target_Pose.orientation.y=0.0#oy

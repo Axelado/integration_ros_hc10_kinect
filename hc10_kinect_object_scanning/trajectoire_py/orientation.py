@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import numpy as np
 
-A = np.array([0,0,0]) #position actuel
+A = np.array([0,0,0]) #position actuel      
 B = np.array([1,20,0]) #centre ellipse/objet
-C = np.array([-6,1,0]) #position suivante
+C = np.array([-6,1,0]) #position suivante    
 
 def calcul_repere(A,B,C):
     AB = B-A
