@@ -3,7 +3,8 @@
 
 <!-- ///////////////////////////////// -->
     <!-- <xacro:property name="PI" value="3.14159265359" /> -->
-
+    
+    
     <link name="kinect_link">
         <visual>
             <geometry>

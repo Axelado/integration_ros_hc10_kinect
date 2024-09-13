@@ -30,7 +30,7 @@ Visualization Manager:
       Cell Size: 1
       Class: rviz/Grid
       Color: 160; 160; 164
-      Enabled: false
+      Enabled: true
       Line Style:
         Line Width: 0.029999999329447746
         Value: Lines
@@ -43,7 +43,7 @@ Visualization Manager:
       Plane: XY
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
-      Value: false
+      Value: true
     - Acceleration_Scaling_Factor: 0.1
       Class: moveit_rviz_plugin/MotionPlanning
       Enabled: true
@@ -124,10 +124,6 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          map:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
           tool0:
             Alpha: 1
             Show Axes: false
@@ -230,10 +226,6 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          map:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
           tool0:
             Alpha: 1
             Show Axes: false
@@ -259,7 +251,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: RGB8
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -274,7 +266,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Class: rviz/Camera
       Enabled: false
       Image Rendering: background and overlay
@@ -286,6 +278,7 @@ Visualization Manager:
       Unreliable: false
       Value: false
       Visibility:
+        "": true
         Grid: true
         Image: true
         Map: true
@@ -375,10 +368,6 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-          map:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
           tool0:
             Alpha: 1
             Show Axes: false
@@ -401,6 +390,34 @@ Visualization Manager:
       Unreliable: false
       Use Timestamp: false
       Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /octomap_point_cloud_centers
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -417,7 +434,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2
+      Distance: 2.450216770172119
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -433,9 +450,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.11500012874603271
+      Pitch: 0.04500013589859009
       Target Frame: world
-      Yaw: 0.1367628425359726
+      Yaw: 5.994934558868408
     Saved: ~
 Window Geometry:
   Camera:
