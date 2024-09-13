@@ -44,7 +44,7 @@ def Ellipse_Create(nuage,scale=1):
     levels = np.linspace(0, MaxZ, num_levels + 1)[1:]
 
 
-    return [x,y],levels
+    return [x,y],levels,[centerx,centery]
 
 def closest(nuageinLocal):
     points = np.array(nuageinLocal)
@@ -62,7 +62,7 @@ def pointcloud_callback(msg):
             x, y, z = p[0], p[1], p[2]
             modified_points.append([x, y, z])
         
-        rospy.loginfo(f"{modified_points}")
+        rospy.loginfo(f"{modified_points[:2]}")
         
         coord = Ellipse_Create(modified_points,1.5)
         # plt.plot(x,y)
@@ -79,7 +79,10 @@ def ellipse():
 
     # Subscribe to the /camera/depth/points topic
     rospy.Subscriber("/camera/depth/points_black", PointCloud2, pointcloud_callback)
-    rospy.spin()
+    rospy.loginfo(f"je vais dedans peut etre")
     while coord == None:
         continue
+    rospy.loginfo(f"je suis plus dedans normalement")
+    print(coord)
     return coord
+
