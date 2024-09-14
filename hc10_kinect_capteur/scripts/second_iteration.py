@@ -2,58 +2,120 @@
 
 import rospy
 import numpy as np
+import random
 from sensor_msgs.msg import PointCloud2
 import sensor_msgs.point_cloud2 as pc2
 import std_msgs.msg
-import open3d as o3d
-from tf.transformations import quaternion_matrix, translation_matrix, concatenate_matrices
+from tf import TransformListener
+from tf.transformations import quaternion_matrix, translation_matrix
+import traceback
 
-def ros_to_open3d_point_cloud(ros_cloud):
-    points = np.array(list(pc2.read_points(ros_cloud, skip_nans=True, field_names=("x", "y", "z"))), dtype=np.float32)
-    open3d_cloud = o3d.geometry.PointCloud()
-    open3d_cloud.points = o3d.utility.Vector3dVector(points)
-    return open3d_cloud
 
-def open3d_to_ros_point_cloud(open3d_cloud, frame_id):
-    points = np.asarray(open3d_cloud.points)
-    header = std_msgs.msg.Header()
-    header.stamp = rospy.Time.now()
-    header.frame_id = frame_id
-    return pc2.create_cloud_xyz32(header, points)
+listener = None
 
-def filter_floor_from_point_cloud(open3d_cloud):
-    plane_model, inliers = open3d_cloud.segment_plane(distance_threshold=0.01, ransac_n=3, num_iterations=100)
-    return open3d_cloud.select_by_index(inliers, invert=True)
+def transform_point_cloud(points, transformation_matrix):
+    if points.shape[0] == 0:
+        return points
 
-def transform_point_cloud(open3d_cloud, transformation_matrix):
-    # Apply the transformation to each point
-    points = np.asarray(open3d_cloud.points)
-    homogenous_points = np.hstack((points, np.ones((points.shape[0], 1))))  # Convert to homogeneous coordinates
-    transformed_points = homogenous_points @ transformation_matrix.T  # Apply transformation
-    transformed_cloud = o3d.geometry.PointCloud()
-    transformed_cloud.points = o3d.utility.Vector3dVector(transformed_points[:, :3])  # Convert back to 3D coordinates
-    return transformed_cloud
+    if points.shape[1] != 3:
+        rospy.logerr(f"Unexpected point cloud shape: {points.shape}")
+        return points
+
+    try:
+        transformed_points = []
+        for point in points:
+            homogenous_point = np.append(point, 1)  
+            transformed_point = transformation_matrix @ homogenous_point.T  
+            transformed_points.append(transformed_point[:3])  
+
+        return np.array(transformed_points)
+    except MemoryError as e:
+        rospy.logerr(f"MemoryError during transformation: {e}")
+        return points
+    except Exception as e:
+        rospy.logerr(f"Unexpected error during transformation: {e}")
+        return points
 
 def pointcloud_callback(msg):
     try:
-        # Define the transformation matrix (example: translation of 1m along x, 2m along y, 3m along z)
-        translation = np.array([1.0, 2.0, 3.0])
-        transformation_matrix = np.eye(4)
-        transformation_matrix[:3, 3] = translation
+        distance_threshold = 0.1
+        target_frame = "/world"
+        source_frame = msg.header.frame_id
+
+        points = []
         
-        open3d_cloud = ros_to_open3d_point_cloud(msg)
-        filtered_cloud = filter_floor_from_point_cloud(open3d_cloud)
+        for p in pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True):
+            x, y, z = p[0], p[1], p[2]
+            points.append([x, y, z])
         
-        # Apply transformation to the point cloud
-        transformed_cloud = transform_point_cloud(filtered_cloud, transformation_matrix)
+        if len(points) == 0:
+            rospy.logwarn("No points in point cloud.")
+            return
+
+        points = np.array(points)
+
+        best_inliers = []
+        best_plane_coeffs = None
+        distance_threshold = 0.1
+        ransac_n = 3
+        num_iterations = 100
         
-        filtered_ros_cloud = open3d_to_ros_point_cloud(transformed_cloud, msg.header.frame_id)
+
+        for _ in range(num_iterations):
+            sample_indices = random.sample(range(points.shape[0]), ransac_n)
+            sample_points = points[sample_indices]
+
+            if np.linalg.matrix_rank(sample_points - sample_points[0]) < 3:
+                continue
+
+            vec1 = sample_points[1] - sample_points[0]
+            vec2 = sample_points[2] - sample_points[0]
+
+            normal = np.cross(vec1, vec2)
+            normal /= np.linalg.norm(normal)
+
+            a, b, c = normal
+            d = -np.dot(normal, sample_points[0])
+
+            distances = np.abs(np.dot(points, normal) + d) / np.linalg.norm(normal)
+
+            inliers = np.where(distances < distance_threshold)[0]
+
+            if len(inliers) > len(best_inliers):
+                best_inliers = inliers
+                best_plane_coeffs = (a, b, c, d)
+
+        output = points[~np.isin(np.arange(points.shape[0]), best_inliers)]
+
+        min_z, max_z = min(output[:, 2]), max(output[:, 2])
+        floor_z_threshold = 0.65*(abs(min_z -max_z))
+
+        output = output[(output[:, 2] >= min_z) & (output[:, 2] <= (max_z - floor_z_threshold))]
+        
+        rospy.loginfo(f"2 - max = {max(output[:, 2])}, min = {min(output[:, 2])}, th = {floor_z_threshold}")
+        
+        if output.shape[0] == 0:
+            rospy.logwarn("No points remaining after filtering.")
+            return
+        
+        header = std_msgs.msg.Header()
+        header.stamp = rospy.Time.now()
+        header.frame_id = msg.header.frame_id
+        filtered_ros_cloud = pc2.create_cloud_xyz32(header, output)
+        
         point_cloud_pub.publish(filtered_ros_cloud)
+        
     except Exception as e:
-        rospy.logerr(f"Failed to process point cloud: {e}")
+        rospy.logerr(f"Failed to process point cloud: {str(e)}")
+        rospy.logerr(traceback.format_exc())  
 
 if __name__ == "__main__":
     rospy.init_node("kinect_pointcloud_modifier", anonymous=True)
+    
+    listener = TransformListener()
+    
     point_cloud_pub = rospy.Publisher("/camera/depth/points_black", PointCloud2, queue_size=10)
     rospy.Subscriber("/camera/depth/points", PointCloud2, pointcloud_callback)
+    
+    
     rospy.spin()

@@ -55,15 +55,15 @@ trajectoire = []
 # creation d'une liste des points à atteindre
 for z in h: # itération sur les différentes hauteur
     for i in range(len(x)): # iteration des different points 2D de l'ellipse [x,y]
-        sensor_frame = get_pose()
-        point = PointStamped()
-        point.point.x = x[i]
-        point.point.y = y[i]
-        point.point.z = z
+        # sensor_frame = get_pose()
+        # point = PointStamped()
+        # point.point.x = x[i]
+        # point.point.y = y[i]
+        # point.point.z = z
     
-        output = tf2_geometry_msgs.do_transform_point(point, sensor_frame)
+        # output = tf2_geometry_msgs.do_transform_point(point, sensor_frame)
         
-        trajectoire.append([output.point.x, output.point.y, output.point.z])
+        trajectoire.append([x[i], y[i], z])
         
 
 for i,[x,y,z] in enumerate(trajectoire): # itération sur les points a atteindre
