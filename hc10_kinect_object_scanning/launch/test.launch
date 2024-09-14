@@ -6,11 +6,4 @@
         output="screen">
 
     </node>
-    
-    <node 
-        pkg="hc10_kinect_object_scanning"  name="ellipse_creator"     
-        type="ellipse.py"              
-        output="screen">
-
-    </node>
 </launch>

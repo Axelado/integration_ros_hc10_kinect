@@ -74,15 +74,15 @@ def pointcloud_callback(msg):
 
 
 def ellipse():
+    global coord
     # Initialize the ROS node
     rospy.init_node("kinect_pointcloud_visualizer_ocd", anonymous=True)
 
     # Subscribe to the /camera/depth/points topic
     rospy.Subscriber("/camera/depth/points_black", PointCloud2, pointcloud_callback)
-    rospy.loginfo(f"je vais dedans peut etre")
     while coord == None:
         continue
-    rospy.loginfo(f"je suis plus dedans normalement")
-    print(coord)
-    return coord
+    tmp = coord
+    coord = None
+    return tmp
 
