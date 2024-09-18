@@ -16,6 +16,7 @@ def Ellipse_Create(nuage,scale=1):
 
     points = np.array(nuage)
     
+    
     #Détermination des points limites
     
     MaxX = points[np.argmax(points[:, 0])]

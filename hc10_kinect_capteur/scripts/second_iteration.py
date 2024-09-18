@@ -7,34 +7,8 @@ from sensor_msgs.msg import PointCloud2
 import sensor_msgs.point_cloud2 as pc2
 import std_msgs.msg
 from tf import TransformListener
-from tf.transformations import quaternion_matrix, translation_matrix
 import traceback
 
-
-listener = None
-
-def transform_point_cloud(points, transformation_matrix):
-    if points.shape[0] == 0:
-        return points
-
-    if points.shape[1] != 3:
-        rospy.logerr(f"Unexpected point cloud shape: {points.shape}")
-        return points
-
-    try:
-        transformed_points = []
-        for point in points:
-            homogenous_point = np.append(point, 1)  
-            transformed_point = transformation_matrix @ homogenous_point.T  
-            transformed_points.append(transformed_point[:3])  
-
-        return np.array(transformed_points)
-    except MemoryError as e:
-        rospy.logerr(f"MemoryError during transformation: {e}")
-        return points
-    except Exception as e:
-        rospy.logerr(f"Unexpected error during transformation: {e}")
-        return points
 
 def pointcloud_callback(msg):
     try:
@@ -88,7 +62,7 @@ def pointcloud_callback(msg):
         output = points[~np.isin(np.arange(points.shape[0]), best_inliers)]
 
         min_z, max_z = min(output[:, 2]), max(output[:, 2])
-        floor_z_threshold = 0.65*(abs(min_z -max_z))
+        floor_z_threshold = 0.8*(abs(min_z -max_z))
 
         output = output[(output[:, 2] >= min_z) & (output[:, 2] <= (max_z - floor_z_threshold))]
         
@@ -111,8 +85,6 @@ def pointcloud_callback(msg):
 
 if __name__ == "__main__":
     rospy.init_node("kinect_pointcloud_modifier", anonymous=True)
-    
-    listener = TransformListener()
     
     point_cloud_pub = rospy.Publisher("/camera/depth/points_black", PointCloud2, queue_size=10)
     rospy.Subscriber("/camera/depth/points", PointCloud2, pointcloud_callback)

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-#import fonction creer
 from ellipse import ellipse
 from orientation import calcul_quaternion
 import tf2_geometry_msgs
