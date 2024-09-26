@@ -18,7 +18,7 @@ def pointcloud_callback(msg):
         if points.shape[0] == 0:
             rospy.logwarn("No points in point cloud.")
             return
-
+        
         def fit_plane(points):
             centroid = np.mean(points, axis=0)
             centered_points = points - centroid

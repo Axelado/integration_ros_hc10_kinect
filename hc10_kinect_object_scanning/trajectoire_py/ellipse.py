@@ -80,7 +80,7 @@ def ellipse():
     rospy.init_node("kinect_pointcloud_visualizer_ocd", anonymous=True)
 
     # Subscribe to the /camera/depth/points topic
-    rospy.Subscriber("/camera/depth/points_black", PointCloud2, pointcloud_callback)
+    rospy.Subscriber("/camera/depth/points_black_transformed", PointCloud2, pointcloud_callback)
     while coord == None:
         continue
     tmp = coord
